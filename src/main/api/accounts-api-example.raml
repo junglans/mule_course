@@ -1,0 +1,134 @@
+#%RAML 1.0
+title: Accounts Api Example
+description: A course exercise.
+baseUri: https://mocksvc.mulesoft.com/mocks/12b1661b-cc1d-41ba-8a21-8a2826b3764e/api # baseUri: http://anypoint.course.accounts/api
+mediaType: application/json
+types: 
+  accountType: !include types/account-type.raml
+  account: !include types/account.raml
+  newaccount: !include types/newaccount.raml
+  updateaccount: !include types/updateaccount.raml
+/accounts:
+  description: Resource used to manage customer's accounts
+  get:
+    description: Get a list of customer's accounts
+    headers: 
+      Requester-ID:
+        type: string
+        required: true
+    queryParameters: 
+      type:
+        description: The customer's account type. 
+        type: accountType
+        required: true
+      name:
+        description: The account's owner's name
+        type: string
+        required: false
+        example: 'Alfred'
+      country:
+        description: The account's country.
+        type: string
+        required: false
+        example: 'Spain'
+       
+    responses:
+      200:
+        body: 
+          application/json:
+            type: account[]
+            required: true    
+            example: !include examples/account-list-example.raml
+      400:
+        body:
+          application/json:
+            example:
+              message : Bad request 
+                    
+  post:
+    description: Creates a new customer's account.
+    headers: 
+      Requester-ID:
+        type: string
+        required: true
+    body: 
+      application/json:
+            type: newaccount[]
+            example:  !include examples/new-account-example.raml
+    responses: 
+      201:
+        body: 
+          application/json:
+            example:
+              message: Customer's Account created (But not really)
+      400:
+        body:
+          application/json:
+            example:
+              message : Bad request
+  /{ID}:
+    uriParameters: 
+        ID: 
+          description: Customer's account identifier.
+          required: true
+          type: integer
+          example:  1
+    get:
+      description: Gets a customer's account by its ID.
+      responses: 
+        200:
+          body:
+            application/json:
+              example: !include examples/get-account-example.raml
+        400:
+          body:
+            application/json:
+              example: 
+                message: Bad request
+    put:
+      description: Updates a customers account.
+      body:
+          application/json:
+            type: updateaccount
+            example: !include examples/update-account-example.raml
+      responses: 
+        200:
+          body:
+            application/json:
+              example:
+                message: Account updated (But not really..)
+        400:
+          body: 
+            application/json:
+              example:
+                message: Bad request
+    patch:
+      description: Updates a customers account.
+      body:
+          application/json:
+            type: updateaccount
+            example: !include examples/update-account-example.raml
+      responses: 
+        200:
+          body:
+            application/json:
+              example:
+                message: Account updated (But not really..)
+        400:
+          body: 
+            application/json:
+              example:
+                message: Bad request
+    delete:
+      description: Deletes a customer account by its ID.
+      responses: 
+        200:
+          body:
+            application/json:
+              example:
+                message: Customer account deleted (But not really..)
+        400:
+          body:
+            application/json:
+              example: 
+                message: Bad request            
